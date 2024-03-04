@@ -1,0 +1,257 @@
+scala> import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.SparkSession
+
+scala> val spark = SparkSession.builder.appName("Test").getOrCreate()
+24/03/04 12:32:52 WARN SparkSession: Using an existing Spark session; only runtime SQL configurations will take effect.
+spark: org.apache.spark.sql.SparkSession = org.apache.spark.sql.SparkSession@627695fd
+
+scala> val df = spark.read.format("csv").option("header", true).load("s3://mapreduceassignment1/Data/DelayedFlights-updated.csv")
+df: org.apache.spark.sql.DataFrame = [_c0: string, Year: string ... 28 more fields]
+
+scala> df.show()
+24/03/04 12:33:22 WARN SparkStringUtils: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
++---+----+-----+----------+---------+-------+----------+-------+----------+-------------+---------+-------+-----------------+--------------+-------+--------+--------+------+----+--------+------+-------+---------+----------------+--------+------------+------------+--------+-------------+-----------------+
+|_c0|Year|Month|DayofMonth|DayOfWeek|DepTime|CRSDepTime|ArrTime|CRSArrTime|UniqueCarrier|FlightNum|TailNum|ActualElapsedTime|CRSElapsedTime|AirTime|ArrDelay|DepDelay|Origin|Dest|Distance|TaxiIn|TaxiOut|Cancelled|CancellationCode|Diverted|CarrierDelay|WeatherDelay|NASDelay|SecurityDelay|LateAircraftDelay|
++---+----+-----+----------+---------+-------+----------+-------+----------+-------------+---------+-------+-----------------+--------------+-------+--------+--------+------+----+--------+------+-------+---------+----------------+--------+------------+------------+--------+-------------+-----------------+
+|  1|2003|    6|        17|        2|   1310|      1255|   1612|      1615|           AA|     1362| N4YPAA|              122|           140|     93|      -3|      15|   ORD| JFK|     740|     6|     23|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
+|  2|2003|    6|        20|        5|   1303|      1255|   1623|      1615|           AA|     1362| N4XBAA|              140|           140|    100|       8|       8|   ORD| JFK|     740|    11|     29|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
+|  3|2003|    6|        22|        7|   1325|      1255|   1953|      1615|           AA|     1362| N569AA|              328|           140|    113|     218|      30|   ORD| JFK|     740|     9|    206|        0|               N|       0|           0|           0|     218|            0|                0|
+|  4|2003|    6|        23|        1|   1328|      1255|   1655|      1615|           AA|     1362| N4YUAA|              147|           140|    107|      40|      33|   ORD| JFK|     740|     8|     32|        0|               N|       0|           0|           0|      40|            0|                0|
+|  5|2003|    6|        25|        3|   1307|      1255|   1620|      1615|           AA|     1362| N519AA|              133|           140|    101|       5|      12|   ORD| JFK|     740|    12|     20|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
+|  6|2003|    6|         5|        4|   1208|      1155|   1459|      1455|           AA|     1363| N4YTAA|              231|           240|    213|       4|      13|   BOS| DFW|    1562|     7|     11|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
+|  7|2003|    6|         7|        6|   1207|      1155|   1451|      1455|           AA|     1363| N593AA|              224|           240|    203|      -4|      12|   BOS| DFW|    1562|     4|     17|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
+|  8|2003|    6|         8|        7|   1206|      1155|   1445|      1455|           AA|     1363| N4WAAA|              219|           240|    204|     -10|      11|   BOS| DFW|    1562|     5|     10|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
+|  9|2003|    6|        15|        7|   1202|      1155|   1504|      1455|           AA|     1363| N589AA|              242|           240|    216|       9|       7|   BOS| DFW|    1562|     8|     18|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
+| 10|2003|    6|        23|        1|   1207|      1155|   1513|      1455|           AA|     1363| N4XNAA|              246|           240|    215|      18|      12|   BOS| DFW|    1562|    11|     20|        0|               N|       0|           8|           0|       6|            0|                4|
+| 11|2003|    6|        28|        6|   1209|      1155|   1511|      1455|           AA|     1363| N4XCAA|              242|           240|    209|      16|      14|   BOS| DFW|    1562|    18|     15|        0|               N|       0|           0|           0|       2|            0|               14|
+| 12|2003|    6|         2|        1|   1726|      1715|   2024|      2005|           AA|     1366| N584AA|              118|           110|     77|      19|      11|   COS| DFW|     592|    19|     22|        0|               N|       0|           0|           0|       8|            0|               11|
+| 13|2003|    6|         6|        5|   1748|      1715|   2029|      2005|           AA|     1366| N462AA|              101|           110|     82|      24|      33|   COS| DFW|     592|     8|     11|        0|               N|       0|           0|           0|       0|            0|               24|
+| 14|2003|    6|         9|        1|   1828|      1715|   2109|      2005|           AA|     1366| N530AA|              101|           110|     80|      64|      73|   COS| DFW|     592|     7|     14|        0|               N|       0|           0|           0|       3|            0|               61|
+| 15|2003|    6|        14|        6|   1724|      1715|   1958|      2005|           AA|     1366| N541AA|               94|           110|     72|      -7|       9|   COS| DFW|     592|     9|     13|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
+| 16|2003|    6|        16|        1|   1747|      1715|   2042|      2005|           AA|     1366| N522AA|              115|           110|     77|      37|      32|   COS| DFW|     592|    26|     12|        0|               N|       0|           0|           0|       5|            0|               32|
+| 17|2003|    6|        19|        4|   1931|      1715|   2208|      2005|           AA|     1366| N570AA|               97|           110|     77|     123|     136|   COS| DFW|     592|     8|     12|        0|               N|       0|           0|           0|       0|            0|              123|
+| 18|2003|    6|        20|        5|   1847|      1715|   2128|      2005|           AA|     1366| N511AA|              101|           110|     79|      83|      92|   COS| DFW|     592|    10|     12|        0|               N|       0|           0|           0|       0|            0|               83|
+| 19|2003|    6|        21|        6|   1745|      1715|   2025|      2005|           AA|     1366| N587AA|              100|           110|     78|      20|      30|   COS| DFW|     592|     8|     14|        0|               N|       0|           0|           0|       0|            0|               20|
+| 20|2003|    6|        22|        7|   1724|      1715|   2003|      2005|           AA|     1366| N558AA|               99|           110|     77|      -2|       9|   COS| DFW|     592|    11|     11|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|
++---+----+-----+----------+---------+-------+----------+-------+----------+-------------+---------+-------+-----------------+--------------+-------+--------+--------+------+----+--------+------+-------+---------+----------------+--------+------------+------------+--------+-------------+-----------------+
+only showing top 20 rows
+
+
+scala> df.write.format("parquet").partitionBy("Year").save("s3://mapreduceassignment1/Spark/DelayedFlights-updated1-df")
+
+scala> val df2 = spark.read.format("parquet").option("header", true).load("s3://mapreduceassignment1/Spark/DelayedFlights-updated1-df")
+df2: org.apache.spark.sql.DataFrame = [_c0: string, Month: string ... 28 more fields]
+
+scala> df2 show()
++---+-----+----------+---------+-------+----------+-------+----------+-------------+---------+-------+-----------------+--------------+-------+--------+--------+------+----+--------+------+-------+---------+----------------+--------+------------+------------+--------+-------------+-----------------+----+
+|_c0|Month|DayofMonth|DayOfWeek|DepTime|CRSDepTime|ArrTime|CRSArrTime|UniqueCarrier|FlightNum|TailNum|ActualElapsedTime|CRSElapsedTime|AirTime|ArrDelay|DepDelay|Origin|Dest|Distance|TaxiIn|TaxiOut|Cancelled|CancellationCode|Diverted|CarrierDelay|WeatherDelay|NASDelay|SecurityDelay|LateAircraftDelay|Year|
++---+-----+----------+---------+-------+----------+-------+----------+-------------+---------+-------+-----------------+--------------+-------+--------+--------+------+----+--------+------+-------+---------+----------------+--------+------------+------------+--------+-------------+-----------------+----+
+|400|    6|        25|        3|   1613|      1535|   2134|      2105|           AA|     1406| N4XYAA|              201|           210|    180|      29|      38|   PHX| ORD|    1440|    12|      9|        0|               N|       0|           0|           0|       0|            0|               29|2007|
+|401|    6|        26|        4|   1623|      1535|   2210|      2105|           AA|     1406| N200AA|              227|           210|    195|      65|      48|   PHX| ORD|    1440|    10|     22|        0|               N|       0|           0|           0|      17|            0|               48|2007|
+|402|    6|        27|        5|   1652|      1535|   2200|      2105|           AA|     1406| N4XHAA|              188|           210|    172|      55|      77|   PHX| ORD|    1440|     4|     12|        0|               N|       0|           0|           0|      31|            0|               24|2007|
+|403|    6|        28|        6|   1643|      1535|   2205|      2105|           AA|     1406| N556AA|              202|           210|    177|      60|      68|   PHX| ORD|    1440|    14|     11|        0|               N|       0|          14|           0|       0|            0|               46|2007|
+|404|    6|        29|        7|   1552|      1535|   2120|      2105|           AA|     1406| N201AA|              208|           210|    183|      15|      17|   PHX| ORD|    1440|    13|     12|        0|               N|       0|           0|           0|       6|            0|                9|2007|
+|405|    6|        30|        1|   1557|      1535|   2121|      2105|           AA|     1406| N4YMAA|              204|           210|    184|      16|      22|   PHX| ORD|    1440|     7|     13|        0|               N|       0|          16|           0|       0|            0|                0|2007|
+|406|    6|         3|        2|   1305|      1220|   1617|      1435|           AA|     1407| N4WBAA|              312|           255|    234|     102|      45|   ORD| LAX|    1745|     9|     69|        0|               N|       0|           0|          45|      57|            0|                0|2007|
+|407|    6|         9|        1|   1228|      1220|   1501|      1435|           AA|     1407| N4XMAA|              273|           255|    240|      26|       8|   ORD| LAX|    1745|    15|     18|        0|               N|       0|           6|           0|      18|            0|                2|2007|
+|408|    6|        10|        2|   1419|      1220|   1658|      1435|           AA|     1407| N4XWAA|              279|           255|    249|     143|     119|   ORD| LAX|    1745|    11|     19|        0|               N|       0|           9|           0|      24|            0|              110|2007|
+|409|    6|        13|        5|   1247|      1220|   1515|      1435|           AA|     1407| N433AA|              268|           255|    247|      40|      27|   ORD| LAX|    1745|     4|     17|        0|               N|       0|           0|           0|      20|            0|               20|2007|
+|410|    6|        15|        7|   1246|      1220|   1505|      1435|           AA|     1407| N438AA|              259|           255|    238|      30|      26|   ORD| LAX|    1745|     4|     17|        0|               N|       0|           0|           0|      18|            0|               12|2007|
+|411|    6|        22|        7|   1238|      1220|   1451|      1435|           AA|     1407| N434AA|              253|           255|    230|      16|      18|   ORD| LAX|    1745|     8|     15|        0|               N|       0|          16|           0|       0|            0|                0|2007|
+|412|    6|        23|        1|   1232|      1220|   1443|      1435|           AA|     1407| N4WXAA|              251|           255|    226|       8|      12|   ORD| LAX|    1745|     8|     17|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|2007|
+|413|    6|        25|        3|   1236|      1220|   1518|      1435|           AA|     1407| N599AA|              282|           255|    229|      43|      16|   ORD| LAX|    1745|     6|     47|        0|               N|       0|           0|           0|      31|            0|               12|2007|
+|414|    6|        29|        7|   1250|      1220|   1503|      1435|           AA|     1407| N572AA|              253|           255|    221|      28|      30|   ORD| LAX|    1745|    19|     13|        0|               N|       0|          28|           0|       0|            0|                0|2007|
+|415|    6|         1|        7|    947|       925|   1323|      1305|           AA|     1408| N582AA|              156|           160|    139|      18|      22|   DFW| RDU|    1062|     3|     14|        0|               N|       0|          12|           0|       0|            0|                6|2007|
+|416|    6|         4|        3|    944|       925|   1321|      1305|           AA|     1408| N474AA|              157|           160|    137|      16|      19|   DFW| RDU|    1062|     3|     17|        0|               N|       0|           0|           0|       0|            0|               16|2007|
+|417|    6|         8|        7|    940|       925|   1318|      1305|           AA|     1408| N577AA|              158|           160|    143|      13|      15|   DFW| RDU|    1062|     3|     12|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|2007|
+|418|    6|         9|        1|   1055|       925|   1430|      1305|           AA|     1408| N4YUAA|              155|           160|    137|      85|      90|   DFW| RDU|    1062|     6|     12|        0|               N|       0|          85|           0|       0|            0|                0|2007|
+|419|    6|        10|        2|    933|       925|   1314|      1305|           AA|     1408| N502AA|              161|           160|    142|       9|       8|   DFW| RDU|    1062|     3|     16|        0|               N|       0|        NULL|        NULL|    NULL|         NULL|             NULL|2007|
++---+-----+----------+---------+-------+----------+-------+----------+-------------+---------+-------+-----------------+--------------+-------+--------+--------+------+----+--------+------+-------+---------+----------------+--------+------------+------------+--------+-------------+-----------------+----+
+only showing top 20 rows
+
+
+scala> df2.createOrReplaceTempView("delay_flights")
+
+scala> val startTime = System.nanoTime()
+startTime: Long = 1393404820835
+
+scala>
+
+scala>
+
+scala> val carrier_delay_result = spark.sql("SELECT Year as Year, avg((CarrierDelay/AirTime)*100) as Year_wise_carrier_delay from delay_flights GROUP BY Year ORDER BY year DESC").show()
++----+-----------------------+
+|Year|Year_wise_carrier_delay|
++----+-----------------------+
+|2010|     12.485743688847023|
+|2009|      16.17217590221228|
+|2008|       10.6281700991044|
+|2007|     12.792249484994011|
+|2006|     23.470592368534952|
+|2005|      22.58822666567212|
+|2004|     34.122361607699666|
+|2003|     15.956302163133163|
++----+-----------------------+
+
+carrier_delay_result: Unit = ()
+
+scala>
+
+scala>
+
+scala> val endTime = System.nanoTime()
+endTime: Long = 1395719611454
+
+scala>
+
+scala> val executionTime = (endTime - startTime) / 1e9
+executionTime: Double = 2.314790619
+
+scala>
+
+scala>
+
+scala> println(s"Execution time: $executionTime seconds")
+Execution time: 2.314790619 seconds
+
+scala>
+
+scala> val startTimeNASDelay = System.nanoTime()
+startTimeNASDelay: Long = 1396154140901
+
+scala>
+
+scala>
+
+scala> val NAS_delay_result = spark.sql("SELECT Year as Year, avg((NASDelay/AirTime)*100) as Year_wise_NAS_delay from delay_flights WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year DESC").show()
++----+-------------------+
+|Year|Year_wise_NAS_delay|
++----+-------------------+
+|2010| 24.635771338121728|
+|2009|  18.29923600428028|
+|2008| 11.249935547415394|
+|2007| 27.914813356513143|
+|2006|  9.982400104242256|
+|2005| 12.815732978288581|
+|2004| 10.531418443676785|
+|2003|  20.05301169080401|
++----+-------------------+
+
+NAS_delay_result: Unit = ()
+
+scala>
+
+scala>
+
+scala> val endTimeNASDelay = System.nanoTime()
+endTimeNASDelay: Long = 1397303827103
+
+scala>
+
+scala>
+
+scala> val executionTimeNASDelay = (endTimeNASDelay - startTimeNASDelay) / 1e9
+executionTimeNASDelay: Double = 1.149686202
+
+scala>
+
+scala>
+
+scala> println(s"Execution time for Year-wise NAS delay: $executionTimeNASDelay seconds")
+Execution time for Year-wise NAS delay: 1.149686202 seconds
+
+scala>
+
+scala> val startTimeWeatherDelay = System.nanoTime()
+startTimeWeatherDelay: Long = 1397737531705
+
+scala>
+
+scala>
+
+scala> val weather_delay_result = spark.sql("SELECT Year as Year, avg((WeatherDelay/AirTime)*100) as Year_wise_weather_delay from delay_flights WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year DESC").show()
++----+-----------------------+
+|Year|Year_wise_weather_delay|
++----+-----------------------+
+|2010|     1.3771565992610664|
+|2009|    0.20085688499601304|
+|2008|     2.5603498258125126|
+|2007|     3.9670531932955706|
+|2006|      7.462203523790886|
+|2005|      4.637677534445092|
+|2004|      6.989193075735503|
+|2003|      8.067233052041292|
++----+-----------------------+
+
+weather_delay_result: Unit = ()
+
+scala>
+
+scala>
+
+scala> val endTimeWeatherDelay = System.nanoTime()
+endTimeWeatherDelay: Long = 1398513768660
+
+scala>
+
+scala>
+
+scala> val executionTimeWeatherDelay = (endTimeWeatherDelay - startTimeWeatherDelay) / 1e9
+executionTimeWeatherDelay: Double = 0.776236955
+
+scala>
+
+scala>
+
+scala> println(s"Execution time for Year-wise weather delay: $executionTimeWeatherDelay seconds")
+Execution time for Year-wise weather delay: 0.776236955 seconds
+
+scala>
+
+scala> val startTimeLateAircraftDelay = System.nanoTime()
+startTimeLateAircraftDelay: Long = 1399215986088
+
+scala>
+
+scala>
+
+scala> val late_aircraft_delay_result = spark.sql("SELECT Year as Year, avg((LateAircraftDelay/AirTime)*100) as Year_wise_late_aircraft_delay from delay_flights WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year DESC").show()
++----+-----------------------------+
+|Year|Year_wise_late_aircraft_delay|
++----+-----------------------------+
+|2010|           37.432608548335615|
+|2009|            24.56842313171424|
+|2008|           18.217185719733873|
+|2007|           39.834419073777326|
+|2006|            44.40086045308355|
+|2005|            39.80441561135347|
+|2004|           29.596774488743264|
+|2003|            23.93130468759845|
++----+-----------------------------+
+
+late_aircraft_delay_result: Unit = ()
+
+scala>
+
+scala>
+
+scala> val endTimeLateAircraftDelay = System.nanoTime()
+endTimeLateAircraftDelay: Long = 1400533519073
+
+scala>
+
+scala>
+
+scala> val executionTimeLateAircraftDelay = (endTimeLateAircraftDelay - startTimeLateAircraftDelay) / 1e9
+executionTimeLateAircraftDelay: Double = 1.317532985
+
+scala>
+
+scala>
+
+scala> println(s"Execution time for Year-wise late aircraft delay: $executionTimeLateAircraftDelay seconds")
+Execution time for Year-wise late aircraft delay: 1.317532985 seconds
+
+scala>
+
+

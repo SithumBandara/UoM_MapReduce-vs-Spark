@@ -1,0 +1,86 @@
+import org.apache.spark.sql.SparkSession
+
+val spark = SparkSession.builder.appName("Test").getOrCreate()
+
+val df = spark.read.format("csv").option("header", true).load("s3://mapreduceassignment1/Data/DelayedFlights-updated.csv")
+
+df.show()
+
+df.write.format("parquet").partitionBy("Year").save("s3://mapreduceassignment1/Spark/DelayedFlights-updated1-df")
+
+val df2 = spark.read.format("parquet").option("header", true).load("s3://mapreduceassignment1/Spark/DelayedFlights-updated1-df")
+
+
+df2 show()
+﻿
+df2.createOrReplaceTempView("delay_flights")
+
+
+val startTime = System.nanoTime()
+
+
+val carrier_delay_result = spark.sql("SELECT Year as Year, avg((CarrierDelay/AirTime)*100) as Year_wise_carrier_delay from delay_flights GROUP BY Year ORDER BY year DESC").show()
+
+
+val endTime = System.nanoTime()
+
+val executionTime = (endTime - startTime) / 1e9
+
+
+println(s"Execution time: $executionTime seconds")
+
+val startTimeNASDelay = System.nanoTime()
+
+
+val NAS_delay_result = spark.sql("SELECT Year as Year, avg((NASDelay/AirTime)*100) as Year_wise_NAS_delay from delay_flights WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year DESC").show()
+
+
+val endTimeNASDelay = System.nanoTime()
+
+
+val executionTimeNASDelay = (endTimeNASDelay - startTimeNASDelay) / 1e9
+
+
+println(s"Execution time for Year-wise NAS delay: $executionTimeNASDelay seconds")
+
+val startTimeWeatherDelay = System.nanoTime()
+
+
+val weather_delay_result = spark.sql("SELECT Year as Year, avg((WeatherDelay/AirTime)*100) as Year_wise_weather_delay from delay_flights WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year DESC").show()
+
+
+val endTimeWeatherDelay = System.nanoTime()
+
+
+val executionTimeWeatherDelay = (endTimeWeatherDelay - startTimeWeatherDelay) / 1e9
+
+
+println(s"Execution time for Year-wise weather delay: $executionTimeWeatherDelay seconds")
+
+val startTimeSecurityDelay = System.nanoTime()
+
+
+val security_delay_result = spark.sql("SELECT Year as Year, avg((SecurityDelay/AirTime)*100) as Year_wise_security_delay from delay_flights WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year DESC").show()
+
+
+val endTimeSecurityDelay = System.nanoTime()
+
+
+val executionTimeSecurityDelay = (endSecurityDelay - startTimeSecurityDelayy) / 1e9
+
+
+println(s"Execution time for Year-wise security delay: $executionTimeSecurityDelay seconds")
+
+val startTimeLateAircraftDelay = System.nanoTime()
+
+
+val late_aircraft_delay_result = spark.sql("SELECT Year as Year, avg((LateAircraftDelay/AirTime)*100) as Year_wise_late_aircraft_delay from delay_flights WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year DESC").show()
+
+
+val endTimeLateAircraftDelay = System.nanoTime()
+
+
+val executionTimeLateAircraftDelay = (endTimeLateAircraftDelay - startTimeLateAircraftDelay) / 1e9
+
+
+println(s"Execution time for Year-wise late aircraft delay: $executionTimeLateAircraftDelay seconds")
